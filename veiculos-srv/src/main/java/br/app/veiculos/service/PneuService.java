@@ -4,6 +4,7 @@ import br.app.veiculos.dto.PneuRequest;
 import br.app.veiculos.dto.PneuResponse;
 import br.app.veiculos.entity.Pneu;
 import br.app.veiculos.exception.RegraNegocioException;
+import br.app.veiculos.mapper.PneuMapper;
 import br.app.veiculos.repository.PneuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -17,14 +18,15 @@ import java.util.List;
 public class PneuService {
 
 	private final PneuRepository pneuRepository;
-
+	private final PneuMapper pneuMapper;
+//Requisito 4 - lista todos os pneus
 	@Transactional(readOnly = true)
 	public List<PneuResponse> listar() {
 		return pneuRepository.findAll(Sort.by(Sort.Direction.ASC, "id")).stream()
-				.map(this::toResponse)
+				.map(pneuMapper::toResponse)
 				.toList();
 	}
-
+//Requisito 5 - cria um pneu
 	@Transactional
 	public PneuResponse criar(PneuRequest request) {
 		String numero = request.getNumeroFogo().trim();
@@ -37,18 +39,6 @@ public class PneuService {
 		p.setPressaoAtualPsi(request.getPressaoAtualPsi());
 		p.setStatus(request.getStatus().trim().toUpperCase());
 		p = pneuRepository.save(p);
-		return toResponse(p);
-	}
-
-	private PneuResponse toResponse(Pneu p) {
-		return PneuResponse.builder()
-				.id(p.getId())
-				.numeroFogo(p.getNumeroFogo())
-				.marca(p.getMarca())
-				.pressaoAtualPsi(p.getPressaoAtualPsi())
-				.status(p.getStatus())
-				.createdAt(p.getCreatedAt())
-				.updatedAt(p.getUpdatedAt())
-				.build();
+		return pneuMapper.toResponse(p);
 	}
 }

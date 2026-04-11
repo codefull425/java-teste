@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PneuRepository extends JpaRepository<Pneu, Long> {
 
-	Optional<Pneu> findByNumeroFogoIgnoreCase(String numeroFogo);
+	
 
 	boolean existsByNumeroFogoIgnoreCase(String numeroFogo);
 }

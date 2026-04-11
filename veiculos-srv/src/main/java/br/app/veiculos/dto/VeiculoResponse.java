@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VeiculoResumoResponse {
+public class VeiculoResponse {
 
 	private Long id;
 	private String placa;

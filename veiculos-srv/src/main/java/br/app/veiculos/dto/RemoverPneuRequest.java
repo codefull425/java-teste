@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class DesvincularPneuRequest {
+public class RemoverPneuRequest {
 
 	@NotNull
 	private Long pneuId;

@@ -31,9 +31,6 @@ public class VeiculoPneu {
 	@Column(nullable = false, length = 50)
 	private String posicao;
 
-	@Column(nullable = false)
-	private Boolean ativo;
-
 	@Column(name = "data_vinculo", nullable = false)
 	private LocalDateTime dataVinculo;
 
@@ -51,9 +48,6 @@ public class VeiculoPneu {
 		LocalDateTime now = LocalDateTime.now();
 		createdAt = now;
 		updatedAt = now;
-		if (ativo == null) {
-			ativo = Boolean.TRUE;
-		}
 		if (dataVinculo == null) {
 			dataVinculo = now;
 		}

@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<testcontainers.version>1.20.4</testcontainers.version>
+		<!-- Defina vazio na linha de comando para rodar testes @Tag("integration"), ex.: -Dsurefire.excludedGroups= -->
+		<surefire.excludedGroups>integration</surefire.excludedGroups>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,6 +35,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -72,6 +79,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -86,6 +98,114 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludedGroups>${surefire.excludedGroups}</excludedGroups>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>1.00</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>3.0.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.groovy</groupId>
+						<artifactId>groovy</artifactId>
+						<version>4.0.21</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>jacoco-console-summary</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<scripts>
+								<script><![CDATA[
+def f = new File(project.basedir, 'target/site/jacoco/jacoco.xml')
+if (!f.exists()) {
+	log.warn('JaCoCo: ficheiro target/site/jacoco/jacoco.xml não encontrado.')
+	return
+}
+def text = f.getText('UTF-8')
+def nameM = (text =~ /(?s)<report name="([^"]*)"/)
+def bundleName = nameM.find() ? nameM.group(1) : 'veiculos-srv'
+def lastCounter = { String type ->
+	def m = (text =~ /<counter type="${type}" missed="(\d+)" covered="(\d+)"\/>/)
+	def missed = 0, cov = 0
+	while (m.find()) {
+		missed = m.group(1) as int
+		cov = m.group(2) as int
+	}
+	return [missed, cov]
+}
+def fmt = { int missed, int cov ->
+	int t = missed + cov
+	double p = t > 0 ? (100.0 * cov / t) : 100.0
+	String.format(java.util.Locale.US, '%.1f%% (%d/%d)', p, cov, t)
+}
+def line = lastCounter('LINE')
+def instr = lastCounter('INSTRUCTION')
+def branch = lastCounter('BRANCH')
+log.info('')
+log.info('========== JaCoCo — bundle: ' + bundleName + ' ==========')
+log.info('  Linhas:        ' + fmt(line[0], line[1]))
+log.info('  Instruções:    ' + fmt(instr[0], instr[1]))
+log.info('  Branches:      ' + fmt(branch[0], branch[1]))
+log.info('  Relatório HTML: target/site/jacoco/index.html')
+log.info('========================================================')
+log.info('')
+								]]></script>
+							</scripts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

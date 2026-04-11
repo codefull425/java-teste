@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class VincularPneuRequest {
+public class AplicarPneuRequest {
 
 	@NotNull
 	private Long pneuId;

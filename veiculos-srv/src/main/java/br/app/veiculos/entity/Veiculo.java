@@ -1,19 +1,19 @@
 package br.app.veiculos.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "veiculo")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Veiculo {
 
 	@Id
@@ -37,6 +37,10 @@ public class Veiculo {
 
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	/** Listagem de aplicações ({@code veiculo_pneu}); montagem atual quando {@link VeiculoPneu#getDataDesvinculo()} é {@code null}. */
+	@OneToMany(mappedBy = "veiculo", fetch = FetchType.LAZY)
+	private List<VeiculoPneu> aplicacoes = new ArrayList<>();
 
 	@PrePersist
 	protected void onCreate() {

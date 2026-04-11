@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PneuAplicadoResponse {
+public class AplicarPneuResponse {
 
-	private Long pneuId;
-	private String numeroDeFogo;
-	private String posicao;
+	public static final String MENSAGEM_SUCESSO = "PNEU APLICADO COM SUCESSO";
+
+	private String mensagem;
+	private VeiculoDetalheResponse veiculo;
 }

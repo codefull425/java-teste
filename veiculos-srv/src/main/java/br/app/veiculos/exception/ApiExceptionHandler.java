@@ -33,7 +33,7 @@ public class ApiExceptionHandler {
 	public ProblemDetail handleDataIntegrity(DataIntegrityViolationException ex) {
 		ProblemDetail pd = ProblemDetail.forStatusAndDetail(
 				HttpStatus.CONFLICT,
-				"Violação de integridade no banco (posição já ocupada, pneu já vinculado ou chave duplicada).");
+				"Violação de integridade no banco (posição já ocupada, pneu já aplicado ou chave duplicada).");
 		pd.setTitle("Conflito de dados");
 		pd.setType(URI.create("about:blank"));
 		return pd;
