@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: veiculos-postgres
+    environment:
+      POSTGRES_DB: veiculos
+      POSTGRES_USER: veiculos
+      POSTGRES_PASSWORD: veiculos
+    # Host 5434 evita conflito com PostgreSQL nativo do Windows em 5433 (comum).
+    ports:
+      - "5434:5432"
+    volumes:
+      - veiculos_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veiculos -d veiculos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  veiculos_pg_data:
