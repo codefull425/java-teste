@@ -19,5 +19,10 @@ API REST (Spring Boot 3, Java 17) para gestão de **veículos**, **pneus** e **a
 
 Se a porta **8080** estiver ocupada, antes do passo 4 defina outra porta, por exemplo no PowerShell: `$env:SERVER_PORT="8090"`. Para mudar a porta do banco, altere o mapeamento em `docker-compose.yml` e use a mesma porta em `DB_PORT` (o padrão da aplicação é **5434** no host).
 
+## Rodar testes
+
+- **Suite padrão (sem Docker):** na pasta `veiculos-srv`, rode `.\mvnw.cmd test` (PowerSheel - Windows) ou ./mvnw test (Bash - Windows) ou `./mvnw test` (Linux/macOS). Por padrão o Surefire **exclui** testes com `@Tag("integration")` (veja `surefire.excludedGroups` no `pom.xml`).
+- **Incluir testes de integração:** é necessário **Docker em execução** (Testcontainers). Use por exemplo: `mvnw.cmd test -Dsurefire.excludedGroups=` ou `./mvnw verify -Dsurefire.excludedGroups=` (valor vazio remove a exclusão).
+
 ---
 
