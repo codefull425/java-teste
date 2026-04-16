@@ -9,9 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Exercita builders/getters Lombok usados na API e em respostas JSON.
- */
+
 class DtoBuildersCoverageTest {
 
 	@Test
