@@ -23,4 +23,6 @@ jobs:
 
       - name: Build with Maven Wrapper
         working-directory: veiculos-srv
-        run: ./mvnw -B verify
+        run: |
+          chmod +x mvnw
+          ./mvnw -B verify
